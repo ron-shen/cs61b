@@ -3,7 +3,7 @@ public class ArrayDeque<T> {
     private int size;
     private int head;
     private int tail;
-    ArrayDeque(){
+    public ArrayDeque(){
         items = (T[]) new Object[8];
         size = 0;
         head = 0;
@@ -37,7 +37,7 @@ public class ArrayDeque<T> {
         size += 1;
     }
     public boolean isEmpty(){
-        return size != 0 ? true : false;
+        return size == 0 ? true : false;
     }
     public int size(){
         return size;
