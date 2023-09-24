@@ -1,5 +1,3 @@
-package project1.deque;
-
 
 class Node<T>{
     public T val;
