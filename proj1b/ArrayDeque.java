@@ -1,6 +1,6 @@
-package proj1a;
+package proj1b;
 
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Deque<T> {
     private T[] items;
     private int size;
     private int head;
@@ -22,6 +22,7 @@ public class ArrayDeque<T> {
         head = 0;
         tail = size;
     }
+    @Override
     public void addFirst(T item) {
         if(size == items.length) {
             resize(size * 2);
@@ -30,6 +31,7 @@ public class ArrayDeque<T> {
         items[head] = item;
         size += 1;
     }
+    @Override
     public void addLast(T item) {
         if(size == items.length) {
             resize(size * 2);
@@ -38,12 +40,15 @@ public class ArrayDeque<T> {
         tail = (tail + 1) % items.length;
         size += 1;
     }
+    @Override
     public boolean isEmpty() {
         return size == 0 ? true : false;
     }
+    @Override
     public int size(){
         return size;
     }
+    @Override
     public void printDeque() {
         int idx = 0;
         for(int i = 0; i < size; i++) {
@@ -52,6 +57,7 @@ public class ArrayDeque<T> {
             System.out.print(' ');
         }
     }
+    @Override
     public T removeFirst() {
         if(size == 0) {
             return null;
@@ -65,6 +71,7 @@ public class ArrayDeque<T> {
         }
         return item;
     }
+    @Override
     public T removeLast() {
         if(size == 0){
             return null;
@@ -78,6 +85,7 @@ public class ArrayDeque<T> {
         }
         return item;
     }
+    @Override
     public T get(int index){
         return items[(head + index) % items.length];
     }

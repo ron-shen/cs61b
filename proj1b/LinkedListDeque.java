@@ -1,4 +1,4 @@
-package proj1a;
+package proj1b;
 
 class Node<T>{
     public T val;
@@ -90,16 +90,18 @@ class LinkedList<T>{
     }
 }
 
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Deque<T>{
     private Node<T> header;
     private Node<T> trailer;
     private int size;
+
     public LinkedListDeque(){
         this.header = new Node<T>(null, null, null);
         this.trailer = new Node<T>(null, null, header);
         header.next = this.trailer;
         this.size = 0;
     }
+    @Override
     public void addFirst(T item){
         Node newNode = new Node<T>(item, null, null);
         newNode.previous = header;
@@ -108,6 +110,7 @@ public class LinkedListDeque<T> {
         header.next = newNode;
         size += 1;
     }
+    @Override
     public void addLast(T item){
         Node<T> newNode = new Node<T>(item, null, null);
         newNode.next = trailer;
@@ -116,12 +119,15 @@ public class LinkedListDeque<T> {
         trailer.previous = newNode;
         size += 1;
     }
+    @Override
     public boolean isEmpty(){
         return size == 0 ? true : false;
     }
+    @Override
     public int size(){
         return size;
     }
+    @Override
     public void printDeque(){
         Node<T> temp = header.next;
         while(temp != trailer){
@@ -130,6 +136,7 @@ public class LinkedListDeque<T> {
             temp = temp.next;
         }
     }
+    @Override
     public T removeFirst(){
         if(size == 0){
             return null;
@@ -142,6 +149,7 @@ public class LinkedListDeque<T> {
         size -= 1;
         return temp.val;
     }
+    @Override
     public T removeLast(){
         if(size == 0){
             return null;
@@ -154,6 +162,7 @@ public class LinkedListDeque<T> {
         size -= 1;
         return temp.val;
     }
+    @Override
     public T get(int index){
         if(size == 0 || index >= size || index < 0){
             return null;
