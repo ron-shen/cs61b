@@ -1,4 +1,4 @@
-package synthesizer;
+package hw1.synthesizer;
 
 public abstract class AbstractBoundedQueue<T> implements BoundedQueue<T>{
     protected int fillCount;

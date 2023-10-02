@@ -1,4 +1,4 @@
-package synthesizer;
+package hw1.synthesizer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
