@@ -1,4 +1,4 @@
-
+package proj1b;
 
 
 import edu.princeton.cs.introcs.In;

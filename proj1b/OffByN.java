@@ -1,4 +1,4 @@
-
+package proj1b;
 public class OffByN implements CharacterComparator{
     private int offset;
     public OffByN(int offset){
