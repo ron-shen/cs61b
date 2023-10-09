@@ -12,6 +12,9 @@ public class Percolation {
 
     // create N-by-N grid, with all sites initially blocked
     public Percolation(int N) {
+        if(N < 0){
+            throw new IllegalArgumentException();
+        }
         //plus 2 virtual sites (top and bottom)
         normalWQU = new WeightedQuickUnionUF(N * N + 2);
         antiBackWashWQU = new WeightedQuickUnionUF(N * N + 1);
