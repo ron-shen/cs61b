@@ -60,32 +60,6 @@ public class Percolation {
             if(row == grid.length - 1) {
                 normalWQU.union(index1D, size + 1);
             }
-
-/*            if(row - 1 >= 0 && isOpen(row - 1, col)) {
-                normalWQU.union(index1D, convert2DIndexTo1D(row - 1, col));
-                antiwashingWQU.union(index1D, convert2DIndexTo1D(row - 1, col));
-            }
-            if(row + 1 < grid.length && isOpen(row + 1, col)){
-                normalWQU.union(index1D, convert2DIndexTo1D(row + 1, col));
-                antiwashingWQU.union(index1D, convert2DIndexTo1D(row + 1, col));
-            }
-            if(col - 1 >= 0 && isOpen(row, col - 1)) {
-                normalWQU.union(index1D, convert2DIndexTo1D(row, col - 1));
-                antiwashingWQU.union(index1D, convert2DIndexTo1D(row, col - 1));
-            }
-            if(col + 1 < grid.length && isOpen(row, col + 1)) {
-                normalWQU.union(index1D, convert2DIndexTo1D(row, col + 1));
-                antiwashingWQU.union(index1D, convert2DIndexTo1D(row, col + 1));
-            }
-            //connect to virtual top site
-            if(row == 0) {
-                normalWQU.union(index1D, size);
-                antiwashingWQU.union(index1D, size);
-            }
-            //connect to virtual bottom site
-            if(row == grid.length - 1) {
-                normalWQU.union(index1D, size + 1);
-            }*/
         }
     }
 
