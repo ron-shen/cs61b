@@ -1,6 +1,4 @@
-package hw2.hw2;
-
-import hw2.Percolation;
+package hw2;
 
 public class PercolationFactory {
     public Percolation make(int N) {
