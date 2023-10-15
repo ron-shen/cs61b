@@ -1,4 +1,4 @@
-package lab9tester;
+package lab9.lab9tester;
 
 import static org.junit.Assert.*;
 

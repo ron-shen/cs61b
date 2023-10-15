@@ -1,4 +1,4 @@
-package lab9;
+package lab9.lab9;
 
 import java.util.HashSet;
 import java.util.Iterator;
