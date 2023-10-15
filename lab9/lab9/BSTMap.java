@@ -44,7 +44,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      *  or null if this map contains no mapping for the key.
      */
     private V getHelper(K key, Node p) {
-        throw new UnsupportedOperationException();
+        if (p == null) return null;
+        int cmp = p.key.compareTo(key);
+        if      (cmp < 0) return getHelper(key, p.right);
+        else if (cmp > 0) return getHelper(key, p.left);
+        else              return p.value;
     }
 
     /** Returns the value to which the specified key is mapped, or null if this
@@ -52,14 +56,28 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        return getHelper(key, root);
     }
 
     /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
       * Or if p is null, it returns a one node BSTMap containing (KEY, VALUE).
      */
     private Node putHelper(K key, V value, Node p) {
-        throw new UnsupportedOperationException();
+        if(p == null){
+            size += 1;
+            return new Node(key, value);
+        }
+        int cmp = p.key.compareTo(key);
+        if(cmp < 0) {
+            p.right = putHelper(key, value, p.right);
+        }
+        else if(cmp > 0) {
+            p.left = putHelper(key, value, p.left);
+        }
+        else {
+            p.value = value;
+        }
+        return p;
     }
 
     /** Inserts the key KEY
@@ -67,13 +85,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        root = putHelper(key, value, root);
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
@@ -99,11 +117,69 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      **/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        //if size is unchanged -> can't find the node
+        //otherwise -> can find the node
+        int originalSize = size;
+        Node res = removeHelper(key, value, root);
+        return originalSize == size ? null : value;
+    }
+
+    private Node removeHelper(K key, V value, Node p){
+        //node doesn't exist
+        if(p == null){
+            return null;
+        }
+        int cmp = p.key.compareTo(key);
+        if(cmp < 0) p.right = removeHelper(key, value, p.right);
+        else if(cmp > 0) p.left = removeHelper(key, value, p.left);
+        else {
+            size -= 1;
+            //one child or no child
+            if(p.left == null) return p.right;
+            if(p.right == null) return p.left;
+            //2 children
+            Node replaceNode = max(p.left);
+            //deleteMax: connect left subtree of replaceNode to its previous parent node
+            //assignment: connect left ptr of replaceNode to p's left node
+            replaceNode.left = deleteMax(p.left);
+/*            replaceNode.left = p.left;*/
+            replaceNode.right = p.right;
+            return replaceNode;
+        }
+        return p;
+    }
+
+    private Node deleteMax(Node x) {
+        if (x.right == null) return x.left;
+        x.right = deleteMax(x.right);
+        return x;
     }
 
     @Override
     public Iterator<K> iterator() {
         throw new UnsupportedOperationException();
+    }
+
+    //max node in subtree with root node p
+    private Node max(Node p){
+        if(p == null) return null;
+        if(p.right == null) return p;
+        return max(p.right);
+    }
+
+    public static void main(String[] args) {
+        BSTMap<Integer, Integer> b = new BSTMap<>();
+        b.put(20, 2);
+        b.put(25, 2);
+        b.put(15, 2);
+        b.put(10, 2);
+        b.put(18, 2);
+        b.put(8, 2);
+        b.put(12, 2);
+        b.put(11, 2);
+/*        b.put(3, 3);*/
+/*        b.remove(7, 1);
+        b.remove(10, 2);*/
+        b.remove(15,2);
     }
 }

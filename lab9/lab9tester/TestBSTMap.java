@@ -3,7 +3,7 @@ package lab9tester;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import lab9.BSTMap;
+import lab9.lab9.BSTMap;
 
 /**
  * Tests by Brendan Hu, Spring 2015, revised for 2018 by Josh Hug

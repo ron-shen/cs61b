@@ -72,7 +72,7 @@ public class ArrayMap<K, V> implements Map61B<K, V> {
         if (index == -1) {
             return null;
         }
-        return values[index];
+         return values[index];
     }
 
     @Override

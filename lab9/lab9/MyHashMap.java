@@ -53,19 +53,38 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        int hashValue = hash(key);
+        return buckets[hashValue].get(key);
     }
 
     /* Associates the specified value with the specified key in this map. */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        if(loadFactor() > MAX_LF){
+            resize();
+        }
+        int hashValue = hash(key);
+        if(!buckets[hashValue].containsKey(key)) size++;
+        buckets[hashValue].put(key, value);
+    }
+
+    private void resize(){
+        ArrayMap<K, V>[] newBuckets = new ArrayMap[buckets.length * 2];
+        for (int i = 0; i < newBuckets.length; i += 1) {
+            newBuckets[i] = new ArrayMap<>();
+        }
+        int newBucketLength = newBuckets.length;
+        for(int i = 0; i < buckets.length; i++){
+            int newHashValue = Math.floorMod(i, newBucketLength);
+            newBuckets[newHashValue] = buckets[i];
+        }
+        buckets = newBuckets;
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
@@ -81,7 +100,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * UnsupportedOperationException. */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        int hashValue = hash(key);
+        V res  = buckets[hashValue].remove(key);
+        if(res != null) size--;
+        return res;
     }
 
     /* Removes the entry for the specified key only if it is currently mapped to
@@ -89,7 +111,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * throw an UnsupportedOperationException.*/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        int hashValue = hash(key);
+        V res =  buckets[hashValue].remove(key, value);
+        if(res != null) size--;
+        return res;
     }
 
     @Override
