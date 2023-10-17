@@ -1,4 +1,4 @@
-package hw3.hash;
+package hw3.hw3.hash;
 
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
