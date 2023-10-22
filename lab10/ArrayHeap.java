@@ -28,7 +28,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     private static int leftIndex(int i) {
         /* TODO: Your code here! */
-        return 0;
+        return 2 * i;
     }
 
     /**
@@ -36,7 +36,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     private static int rightIndex(int i) {
         /* TODO: Your code here! */
-        return 0;
+        return 2 * i + 1;
     }
 
     /**
@@ -44,7 +44,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     private static int parentIndex(int i) {
         /* TODO: Your code here! */
-        return 0;
+        return i / 2;
     }
 
     /**
@@ -106,9 +106,16 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private void swim(int index) {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
         /** TODO: Your code here. */
-        return;
+        int curIdx = index;
+        int parentIdx = parentIndex(curIdx);
+        int smallerIdx = min(curIdx, parentIdx);
+        while(parentIdx != 0 && smallerIdx == curIdx){
+            swap(curIdx, parentIdx);
+            curIdx = parentIdx;
+            parentIdx = parentIndex(curIdx);
+            smallerIdx = min(curIdx, parentIdx);
+        }
     }
 
     /**
@@ -117,9 +124,25 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private void sink(int index) {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
         /** TODO: Your code here. */
-        return;
+        int curIdx = index;
+        int leftIdx = leftIndex(curIdx);
+        int rightIdX = rightIndex(curIdx);
+        int minIdx = min(leftIdx, rightIdX);
+        while(min(curIdx, leftIdx) != curIdx || min(curIdx, rightIdX) != curIdx){
+            //swap the one with lowest priority
+            if(minIdx == leftIdx){
+                swap(curIdx, leftIdx);
+                curIdx = leftIdx;
+            }
+            else{
+                swap(curIdx, rightIdX);
+                curIdx = rightIdX;
+            }
+            leftIdx = leftIndex(curIdx);
+            rightIdX = rightIndex(curIdx);
+            minIdx = min(leftIdx, rightIdX);
+        }
     }
 
     /**
@@ -132,8 +155,10 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (size + 1 == contents.length) {
             resize(contents.length * 2);
         }
-
         /* TODO: Your code here! */
+        contents[size + 1] = new Node(item, priority);
+        size++;
+        swim(size);
     }
 
     /**
@@ -143,7 +168,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     @Override
     public T peek() {
         /* TODO: Your code here! */
-        return null;
+        return contents[1].myItem;
     }
 
     /**
@@ -158,7 +183,12 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     @Override
     public T removeMin() {
         /* TODO: Your code here! */
-        return null;
+        T minItem = contents[1].myItem;
+        swap(1, size);
+        contents[size] = null;
+        size--;
+        sink(1);
+        return minItem;
     }
 
     /**
@@ -181,7 +211,14 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     @Override
     public void changePriority(T item, double priority) {
         /* TODO: Your code here! */
-        return;
+        for(int i = 1; i < size(); i++){
+            if(contents[i].myItem.equals(item)){
+                contents[i].myPriority = priority;
+                swim(i);
+                sink(i);
+                break;
+            }
+        }
     }
 
     /**
@@ -238,7 +275,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             myPriority = priority;
         }
 
-        public T item(){
+        public T item() {
             return myItem;
         }
 
@@ -253,7 +290,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
 
-    /** Helper function to resize the backing array when necessary. */
+    /**
+     * Helper function to resize the backing array when necessary.
+     */
     private void resize(int capacity) {
         Node[] temp = new ArrayHeap.Node[capacity];
         for (int i = 1; i < this.contents.length; i++) {
@@ -414,4 +453,45 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         }
     }
 
+    @Test
+    public void testPeek(){
+        ExtrinsicPQ<String> pq = new ArrayHeap<>();
+        pq.insert("c", 1);
+        pq.insert("i", 2);
+        pq.insert("g", 3);
+        pq.insert("d", 4);
+        pq.insert("a", 5);
+        pq.insert("h", 6);
+        pq.insert("e", 9);
+        assertEquals("c", pq.peek());
+        assertEquals(7, pq.size());
+    }
+
+    @Test
+    public void testChangePriority(){
+        ArrayHeap<String> pq = new ArrayHeap<>();
+        pq.insert("c", 1);
+        pq.insert("i", 2);
+        pq.insert("g", 3);
+        pq.insert("d", 4);
+        pq.insert("a", 5);
+        pq.insert("h", 6);
+        pq.insert("e", 9);
+        pq.changePriority("g", 8);
+        assertEquals("c", pq.contents[1].myItem);
+        assertEquals("i", pq.contents[2].myItem);
+        assertEquals("h", pq.contents[3].myItem);
+        assertEquals("d", pq.contents[4].myItem);
+        assertEquals("a", pq.contents[5].myItem);
+        assertEquals("g", pq.contents[6].myItem);
+        assertEquals("e", pq.contents[7].myItem);
+        pq.changePriority("d", 0);
+        assertEquals("d", pq.contents[1].myItem);
+        assertEquals("c", pq.contents[2].myItem);
+        assertEquals("h", pq.contents[3].myItem);
+        assertEquals("i", pq.contents[4].myItem);
+        assertEquals("a", pq.contents[5].myItem);
+        assertEquals("g", pq.contents[6].myItem);
+        assertEquals("e", pq.contents[7].myItem);
+    }
 }
