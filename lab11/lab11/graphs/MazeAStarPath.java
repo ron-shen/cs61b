@@ -1,4 +1,4 @@
-package lab11.graphs;
+package lab11.lab11.graphs;
 
 import java.util.*;
 
