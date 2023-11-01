@@ -55,3 +55,4 @@ public class MazeDepthFirstPaths extends MazeExplorer {
     }
 }
 
+
