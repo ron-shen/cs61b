@@ -7,7 +7,7 @@ import edu.princeton.cs.introcs.In;
 
 public class Word implements WorldState {
     private static Set<String> words;
-    private static final String WORDFILE = "input/words10000.txt";
+    private static final String WORDFILE = "D:\\cs61b\\hw4\\input\\words10000.txt";
     private final String word;
     private final String goal;
 
