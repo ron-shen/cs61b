@@ -1,6 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +28,6 @@ public class TestGraphBuildingTiny {
         if (initialized) {
             return;
         }
-
         graphTiny = new GraphDB(OSM_DB_PATH_TINY);
         initialized = true;
     }

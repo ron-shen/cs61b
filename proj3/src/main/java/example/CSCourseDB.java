@@ -116,7 +116,7 @@ public class CSCourseDB {
      * @param args UNUSED
      */
     public static void main(String[] args) {
-        CSCourseDB db = new CSCourseDB("berkeley-cs.xml");
+        CSCourseDB db = new CSCourseDB("D:\\cs61b\\proj3\\berkeley-cs.xml");
         System.out.println(db);
     }
 }

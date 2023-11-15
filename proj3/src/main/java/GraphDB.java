@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
-
+    protected Map<Long, Node> berkeleyNodes;
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -28,10 +28,10 @@ public class GraphDB {
      */
     public GraphDB(String dbPath) {
         try {
+            berkeleyNodes = new HashMap<>();
             File inputFile = new File(dbPath);
             FileInputStream inputStream = new FileInputStream(inputFile);
             // GZIPInputStream stream = new GZIPInputStream(inputStream);
-
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             GraphBuildingHandler gbh = new GraphBuildingHandler(this);
@@ -58,6 +58,13 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
+        Long[] keys = berkeleyNodes.keySet().toArray(new Long[0]);
+        for(long nodeId: keys){
+            Node n = berkeleyNodes.get(nodeId);
+            if(n.neighbours.isEmpty()){
+                berkeleyNodes.remove(nodeId);
+            }
+        }
     }
 
     /**
@@ -65,8 +72,7 @@ public class GraphDB {
      * @return An iterable of id's of all vertices in the graph.
      */
     Iterable<Long> vertices() {
-        //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return berkeleyNodes.keySet();
     }
 
     /**
@@ -75,7 +81,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        return berkeleyNodes.get(v).neighbours;
     }
 
     /**
@@ -136,7 +142,18 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        long closestId = 0;
+        double minDis = Double.MAX_VALUE;
+        double distance = 0;
+        for(long nodeId: berkeleyNodes.keySet()){
+            Node n = berkeleyNodes.get(nodeId);
+            distance = distance(n.lon, n.lat, lon, lat);
+            if(distance < minDis){
+                minDis = distance;
+                closestId = n.id;
+            }
+        }
+        return closestId;
     }
 
     /**
@@ -145,7 +162,7 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        return berkeleyNodes.get(v).lon;
     }
 
     /**
@@ -154,6 +171,32 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        return berkeleyNodes.get(v).lat;
+    }
+
+    public void addNode(Node node){
+        berkeleyNodes.put(node.id, node);
+    }
+    public void addEdge(AbstractList<Long> edges){
+        for(int i = 0; i < edges.size() - 1; i++){
+            long curNodeId = edges.get(i);
+            long nextNodeId = edges.get(i + 1);
+            Node curNode = berkeleyNodes.get(curNodeId);
+            curNode.neighbours.add(nextNodeId);
+            Node nextNode = berkeleyNodes.get(nextNodeId);
+            nextNode.neighbours.add(curNodeId);
+        }
+    }
+
+    public static void main(String[] args) {
+        //GraphDB db = new GraphDB("D:\\cs61b\\proj3\\berkeley.osm");
+        String filePath = "berkeley.osm"; // Your file path here
+
+        File file = new File(filePath);
+
+        // Get the parent file (directory)
+        File parentFile = file.getParentFile();
+        GraphDB db = new GraphDB("berkeley.osm");
+        System.out.println(db);
     }
 }

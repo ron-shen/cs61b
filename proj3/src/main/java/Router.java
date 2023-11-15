@@ -1,5 +1,6 @@
-import java.util.List;
-import java.util.Objects;
+
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,10 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+    private static Map<Long, Double> disTo = new HashMap<>();
+    private static Map<Long, Double> h = new HashMap<>();
+    private static Set<Long> settled = new HashSet<>();
+    private static PriorityQueue<Node> pq = new PriorityQueue<>();
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +30,93 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        long closestStartId = g.closest(stlon, stlat);
+        long closestEndId = g.closest(destlon, destlat);
+        //init h
+        for(long nodeId: g.berkeleyNodes.keySet()){
+            h.put(nodeId, g.distance(nodeId, closestEndId));
+        }
+        //init disTo
+        for(long nodeId: g.berkeleyNodes.keySet()){
+            disTo.put(nodeId, Double.MAX_VALUE);
+        }
+        Node startNode = new Node(closestStartId, 0, null);
+        pq.add(startNode);
+        disTo.put(startNode.id, 0D);
+        //run A*
+        while(!(pq.peek().id == closestEndId)){
+            Node n = pq.poll();
+            settled.add(n.id);
+            for(long neighbour: g.adjacent(n.id)){
+                relax(neighbour, n, g);
+            }
+        }
+        //get the path
+        Node n = pq.poll();
+        Stack<Long> s = new Stack<>();
+        while(n != null){
+            s.add(n.id);
+            n = n.preNode;
+        }
+        List<Long> res = new ArrayList<>();
+        while(!s.empty()){
+            res.add(s.pop());
+        }
+        clean();
+        return res; // FIXME
+    }
+
+    private static void relax(long neighbour, Node v, GraphDB g){
+        if(settled.contains(neighbour)) return;
+        double curDistance = disTo.get(v.id) + g.distance(neighbour, v.id);
+        double distance = disTo.get(neighbour);
+        if(curDistance < distance){
+            disTo.put(neighbour, curDistance);
+            if(pq.contains(new Node(neighbour, distance, v))){
+                pq.remove(new Node(neighbour, distance, v));
+            }
+            pq.add(new Node(neighbour, curDistance + h.get(neighbour), v));
+        }
+    }
+
+    private static void clean(){
+        disTo.clear();
+        h.clear();
+        settled.clear();
+        pq.clear();
+    }
+
+    private static class Node implements Comparable{
+        private long id;
+        private double distance;
+
+        private Node preNode;
+
+        public Node(long id, double distance, Node preNode) {
+            this.id = id;
+            this.distance = distance;
+            this.preNode = preNode;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            Node n = (Node) o;
+            if(this.distance < n.distance){
+                return -1;
+            }
+            if(this.distance > n.distance){
+                return 1;
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Node node = (Node) o;
+            return id == node.id;
+        }
     }
 
     /**
@@ -65,7 +156,7 @@ public class Router {
 
         /** Default name for an unknown way. */
         public static final String UNKNOWN_ROAD = "unknown road";
-        
+
         /** Static initializer. */
         static {
             DIRECTIONS[START] = "Start";

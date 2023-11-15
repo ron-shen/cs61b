@@ -1,4 +1,4 @@
-package hw4.puzzle;
+package hw4.hw4.puzzle;
 import edu.princeton.cs.algs4.In;
 import org.junit.Test;
 
