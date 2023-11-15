@@ -44,7 +44,8 @@ public class Router {
         pq.add(startNode);
         disTo.put(startNode.id, 0D);
         //run A*
-        while(!(pq.peek().id == closestEndId)){
+        while(!(pq.isEmpty())){
+            if(pq.peek().id == closestEndId) break;
             Node n = pq.poll();
             settled.add(n.id);
             for(long neighbour: g.adjacent(n.id)){
