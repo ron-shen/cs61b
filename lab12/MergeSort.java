@@ -1,3 +1,5 @@
+//package lab12;
+
 import edu.princeton.cs.algs4.Queue;
 
 public class MergeSort {
@@ -35,7 +37,13 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
         // Your code here!
-        return null;
+        Queue<Queue<Item>> res = new Queue<Queue<Item>>();
+        for(Item i: items){
+            Queue<Item> item = new Queue<>();
+            item.enqueue(i);
+            res.enqueue(item);
+        }
+        return res;
     }
 
     /**
@@ -54,13 +62,59 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
         // Your code here!
-        return null;
+        Queue<Item> mergedQ = new Queue<>();
+        while(!q1.isEmpty() || !q2.isEmpty()){
+            mergedQ.enqueue(getMin(q1, q2));
+        }
+        return mergedQ;
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
         // Your code here!
-        return items;
+        Queue<Queue<Item>> qq = makeSingleItemQueues(items);
+        return helper(qq, items.size());
+        //return items;
+    }
+
+    private static <Item extends Comparable> Queue<Item> helper(Queue<Queue<Item>> items, int size){
+        if(items.size() == 0){
+            return new Queue<>();
+        }
+
+        if(items.size() == 1){
+            return items.dequeue();
+        }
+
+        int firstHalf = size / 2;
+        Queue<Queue<Item>> first = new Queue<>();
+        for(int i = 0; i < firstHalf; i++){
+            first.enqueue(items.dequeue());
+        }
+
+        int secondHalf = size - firstHalf;
+        Queue<Queue<Item>> second = new Queue<>();
+        for(int i = 0; i < secondHalf; i++){
+            second.enqueue(items.dequeue());
+        }
+
+        Queue<Item> firstHalfSorted = helper(first, firstHalf);
+        Queue<Item> secondHalfSorted = helper(second, secondHalf);
+        return mergeSortedQueues(firstHalfSorted, secondHalfSorted);
+    }
+
+    public static void main(String[] args) {
+        Queue<String> studentA = new Queue<String>();
+        studentA.enqueue("Alice");
+        studentA.enqueue("Ethan");
+        studentA.enqueue("Vanessa");
+        studentA.enqueue("Bob");
+        studentA.enqueue("Zoe");
+/*        Queue<String> studentB = new Queue<String>();
+        studentB.enqueue("Bob");
+        studentB.enqueue("Zoe");*/
+        Queue<String> res = MergeSort.mergeSort(studentA);
+
     }
 }
