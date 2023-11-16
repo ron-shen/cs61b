@@ -1,4 +1,4 @@
-//package lab12;
+package lab12;
 
 import edu.princeton.cs.algs4.Queue;
 
